@@ -16,7 +16,7 @@ spec:
       - name: regcred
       containers:
         - name: nginx-container
-          image: 13120107/node_image
+          image: acrtestting.azurecr.io/acrtestting 
           #          imagePullPolicy: Always
           # imagePullSecrets:
               #      - name: regcred

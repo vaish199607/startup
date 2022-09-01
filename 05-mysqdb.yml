@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysqlv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysqlv
+  template:
+    metadata:
+      labels:
+        app: mysqlv
+    spec:
+      containers:
+        - image: mysql:8.0.30
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 'Admin123'
+            - name: MYSQL_USER
+              value: shoaib
+            - name: MYSQL_PASSWORD
+              value: shoaib123
+            - name: MYSQL_DATABASE
+              value: products
+            # env:
+            # - name: MYSQL_ROOT_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mysql-secret
+            #       key: password
+            # - name: MYSQL_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mysql-secret
+            #       key: db_user
+            # - name: MYSQL_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mysql-secret
+            #       key: db_password
+            # - name: MYSQL_DATABASE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mysql-secret
+            #       key: database
+          ports:
+          - containerPort: 3306
+            name: mysql
+          volumeMounts:
+          - name: mysql-persistent-storagee
+            mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storagee
+        hostPath:
+          path: /var/data/mysql
+          type: DirectoryOrCreate
+        #persistentVolumeClaim:
+         # claimName: mysql-pv-claimm
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysqlv
